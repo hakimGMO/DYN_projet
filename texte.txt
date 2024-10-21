@@ -19,4 +19,6 @@ Boucle de rétroaction négative, retour à l'état végétatif :
     - ComK reprime ComS
         --> annule l'etat compétent 
         --> reactive la degradation de MecA
-    
+
+
+

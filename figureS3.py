@@ -24,11 +24,18 @@ def plot_nullclines(bk, bs, filename):
     dK_dt  = ComK(K, S, bk)
     dS_dt  = ComS(K, S, bs)
 
+    intersection_indices = np.argwhere(np.isclose(dK_dt, 0, atol=1e-4) & np.isclose(dS_dt, 0, atol=1e-3))
+    
+    intersections = [(K[i, j], S[i, j]) for i, j in intersection_indices]
+    
     # Tracer les nullclines
     plt.figure(figsize=(8, 6))  # Taille de la figure
     plt.contour(K, S, dK_dt, levels=[0], colors='blue', linewidths=2)
     plt.contour(K, S, dS_dt, levels=[0], colors='green', linewidths=2)
 
+    for (k, s) in intersections:
+        plt.plot(k, s, 'ro')
+    
     plt.xlabel('ComK')
     plt.ylabel('ComS')
     plt.title('Nullclines pour bk = {}, bs = {}'.format(bk, bs))
@@ -42,4 +49,4 @@ def plot_nullclines(bk, bs, filename):
 plot_nullclines(bk=0.08, bs=0.68, filename='Fig_S3_etat_vegetative_monostable.png')
 plot_nullclines(bk=0.12, bs=0.92, filename='Fig_S3_etat_competent_monostable.png')
 plot_nullclines(bk=0.14, bs=0.68, filename='Fig_S3_etat_bistable.png')
-plot_nullclines(bk=0.08, bs=0.82, filename='Fig_S3_etat_excitable.png')
+plot_nullclines(bk=0.08, bs=0.8, filename='Fig_S3_etat_excitable.png')
