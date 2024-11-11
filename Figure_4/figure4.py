@@ -80,10 +80,9 @@ def plot_nullclines_and_trajectory(k, s, t_end, dt, mult_K):
     for intersection in intersections:
         plt.plot(intersection[0] * 10, intersection[1], 'ro')
 
-    plt.xlabel('ComK (échelle x10)')
-    plt.ylabel('ComS')
-    plt.grid(True)
-
+    plt.xlabel('ComK cocnentration (échelle x10)')
+    plt.ylabel('ComS cocnentration')
+    plt.ylim(0, 8)
     plt.savefig('figure_4a', dpi=300)
     plt.show()
 
@@ -91,11 +90,9 @@ def plot_time_series(k, s, t_end, dt):
     plt.figure(figsize=(8, 6))
     plt.plot(np.arange(0, t_end, dt), k * 10, label='ComK Concentration', color='blue', linewidth=2)
     plt.plot(np.arange(0, t_end, dt), s, label='ComS Concentration', color='green', linewidth=2)
-    plt.xlabel('Temps')
-    plt.ylabel('Niveaux de protéines')
-    plt.title('Simulation de ComK et ComS au fil du temps')
+    plt.xlabel('Time (h)')
+    plt.ylabel('Protein levels (a.u.)')
     plt.legend()
-    plt.grid(True)
     plt.savefig('figure_4b.png', dpi=300)
     plt.show()
 
