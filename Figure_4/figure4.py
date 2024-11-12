@@ -22,18 +22,18 @@ def simulate_system(bk, bs, k0, s0, t_end, dt):
     s = np.zeros(n)
     k[0] = k0
     s[0] = s0
-    noise_amplitude = 0.5
+    noise_amplitude = 0.5 # Variable de bruit
 
     for i in range(1, n):
         dk_dt = ComK(k[i-1], s[i-1], bk)
         ds_dt = ComS(k[i-1], s[i-1], bs)
-        noise_s = np.random.normal(0, noise_amplitude)
+        noise_s = np.random.normal(0, noise_amplitude) # Bruit 
         k[i] = k[i-1] + dk_dt * dt
-        s[i] = s[i-1] + ds_dt * dt + noise_s * np.sqrt(dt)
+        s[i] = s[i-1] + ds_dt * dt + noise_s * np.sqrt(dt) # Bruit de Wiener
 
     return k, s, t
 
-def equations(vars):
+def equations(vars): # Sert pour affichage des intersections
     k, s = vars
     return [ComK(k, s, BK), ComS(k, s, BS)]
 
@@ -45,9 +45,12 @@ initial_guesses = [
 ]
 
 def plot_nullclines_and_trajectory(k, s, t_end, dt, mult_K):
-    k_vals = np.linspace(0, 4, 1000)
+    
+    k_vals = np.linspace(0, 0.45*mult_K, 1000) # Prend 1000 valeur entre 0 et 4.5
     s_vals = np.linspace(0, 8, 1000)
-    k_grid, s_grid = np.meshgrid(k_vals / mult_K, s_vals)
+    
+    k_grid, s_grid = np.meshgrid(k_vals / mult_K, s_vals) # Diviser par mult_K pour que le calcul soit fait dans les bonnes unités (4.5 --> 0.45)
+    
     dk_dt = ComK(k_grid, s_grid, BK)
     ds_dt = ComS(k_grid, s_grid, BS)
 
@@ -55,7 +58,7 @@ def plot_nullclines_and_trajectory(k, s, t_end, dt, mult_K):
     plt.contour(k_grid * mult_K, s_grid, dk_dt, levels=[0], colors='blue', linewidths=2)
     plt.contour(k_grid * mult_K, s_grid, ds_dt, levels=[0], colors='green', linewidths=2)
 
-    k_vector = np.linspace(0, 4, 10)
+    k_vector = np.linspace(0, 0.45*mult_K, 10)
     s_vector = np.linspace(0, 8, 10)
     k_vec, s_vec = np.meshgrid(k_vector / mult_K, s_vector)
     dk_dt_vec = ComK(k_vec, s_vec, BK)
@@ -71,13 +74,15 @@ def plot_nullclines_and_trajectory(k, s, t_end, dt, mult_K):
     # Tracer la trajectoire principale en violet
     plt.plot(k * mult_K, s, color='purple', linewidth=1)
 
-    intersections = []
+    
+    # Calcule quand ComK et ComS sont egaux dans les environs des trois positions donner (guess)
+    intersection_list = []
     for guess in initial_guesses:
         intersection = fsolve(equations, guess)
-        intersections.append(intersection)
+        intersection_list.append(intersection)
     
     
-    for intersection in intersections:
+    for intersection in intersection_list:
         plt.plot(intersection[0] * 10, intersection[1], 'ro')
 
     plt.xlabel('ComK cocnentration (échelle x10)')
