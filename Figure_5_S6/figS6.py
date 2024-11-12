@@ -1,3 +1,5 @@
+# On reprend la figure 4 en changeant quelques point dont la def de ComK 
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
@@ -8,18 +10,31 @@ k0 = 0.2
 k1 = 0.222
 n = 2
 p = 5
-gamma_k = 0.95
+gamma_k = 0.96
 kg = 0.2
 bg = 0.2
 gamma_s = 0.1
 dt = 0.1
 temps_max = 200
 
+# Fonction pour calculer les dérivées
 def ComK(K, S, bk, gamma_k):
     return ak + ((bk * K ** n) / (k0 ** n + K ** n)) - (gamma_k * K / (1 + K + S))
 
 def ComS(K, S, bs):
     return (bs / (1 + (K / k1) ** p)) + ((bg * K ** n) / (kg ** n + K ** n)) - (S / (1 + K + S))
+
+def equations(vars): # Sert pour affichage des intersections
+    k, s = vars
+    return [ComK(k, s, BK,gamma_k), ComS(k, s, BS)]
+
+# Estimations initiales pour trouver les intersections
+initial_guesses = [
+    [0.035,4.4],
+    [0.045, 5.3],
+    [0.15, 4]
+]
+
 
 def simulate_system(bk, bs, k0, s0, t_end, dt):
     t = np.arange(0, t_end, dt)
@@ -66,13 +81,24 @@ def plot_nullclines_and_vector_field():
     ds_dt_vec = ComS(k_vec, s_vec, BS)
     plt.quiver(k_vec, s_vec, dk_dt_vec, ds_dt_vec, scale=2, color='gray', scale_units='xy', angles='xy', width=0.004)
 
+    # Calcule quand ComK et ComS sont egaux dans les environs des trois positions donner (guess)
+    intersection_list = []
+    for guess in initial_guesses:
+        intersection = fsolve(equations, guess)
+        intersection_list.append(intersection)
+    
+    
+    for intersection in intersection_list:
+        plt.plot(intersection[0] , intersection[1], 'ro') # Affiche les points en rouge
+    
+    
+    
     # Simuler le système
     k, s, t = simulate_system( BK, BS, K0, S0, T_END, DT)
     plt.plot(k, s, color='purple', linewidth=1)
 
-    plt.xlabel('ComK')
-    plt.ylabel('ComS')
-    plt.grid(True)
+    plt.xlabel('[ComK] (arb. units)')
+    plt.ylabel('[ComS] (arb. units)')
 
     plt.savefig('FigS6.png', dpi=300)
     plt.show()
