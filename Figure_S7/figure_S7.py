@@ -61,7 +61,7 @@ S0 = 5
 T_END = 120
 DT = 0.2
 
-NUM_SIMULATIONS = 5  # Nombre de séries temporelles à afficher
+NUM_SIMULATIONS = 2  # Nombre de séries temporelles à afficher
 
 plt.figure(figsize=(15, 10))
 
@@ -73,7 +73,7 @@ for i in range(NUM_SIMULATIONS):
     plt.plot(t, s, label='ComS Concentration', color='green', linewidth=1.5)
 
     # Remplir l'arrière-plan en rouge lorsque k dépasse 0.4
-    threshold = 0.4
+    threshold = 0.8
     for j in range(len(k) - 1):
         if k[j] * 10 > threshold and k[j + 1] * 10 > threshold:
             plt.fill_between(t[j:j+2], 0, 1, color='red', alpha=0.3)
@@ -88,10 +88,10 @@ plt.tight_layout()
 plt.savefig('FigS7_time_series.png', dpi=300)
 plt.show()
 
-NUM_SIMULATIONS = 100
+NUM_SIMULATIONS = 1000
 
 all_excursion_times = []
-threshold = 0.45
+threshold = 0.8
 # Exécuter plusieurs simulations pour collecter les temps d'excursion
 for _ in range(NUM_SIMULATIONS):
     k, s, t = simulate_system(BK, BS, K0, S0, T_END, DT)
